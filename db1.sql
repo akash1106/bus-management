@@ -70,7 +70,7 @@ cid int not null,
 foreign key (bid) references bus_details(bid),
 foreign key (cid) references company_details(cid));
 
-create table traver_details(
+create table travel_details(
 tid int auto_increment primary key,
 bid int,
 uid int,
@@ -116,13 +116,13 @@ values("Nishi","Dhingra","Nishi",AES_ENCRYPT("pass3","key"),7896321450,23,"Poona
 ("Sameedha","Khalsa","Sameedha",AES_ENCRYPT("pass3","key"),8264791350,45,"Tharamani Rd","Kollam","Thanjavur","tamilnadu","f","c",4,"1996-05-01",8739654120,4),
 ("Jayshree","Dutt","Jayshree",AES_ENCRYPT("pass3","key"),6789321450,86,"Rampart Rd","Thanjavur","Thanjavur","tamilnadu","f","d",5,"1987-12-11",7689543102,5);
 select * from staff_Details;
-insert into traver_details(bid,uid,dat,seatno,active)
+insert into travel_details(bid,uid,dat,seatno,active)
 values(1,1,"2023-09-07","a1",0),
 (2,2,"2023-09-07","b3",0),
 (3,3,"2023-09-08","c5",1),
 (4,4,"2023-09-08","d7",1),
 (5,5,"2023-09-11","a6",0);
-select * from traver_Details;
+select * from travel_Details;
 insert into busrandr(bid,uid,review,rating)
 values(1,2,"good",4.5),
 (2,3,"poor",3.0),
@@ -151,19 +151,19 @@ delete from staff_details where sid=1;
 select sid,bid from staff_details where sname="David" and pass=AES_ENCRYPT('pass3','key');
 
 -- command 7
-select fname,uid,tid from traver_details natural join user_Details where bid=1;
+select fname,uid,tid from travel_details natural join user_Details where bid=1;
 
 -- command 8
-update  traver_details set active=1 where tid=6;
+update  travel_details set active=1 where tid=6;
 
 -- command 9
 select bid,cid,btype,rating,atime,dtime,ac_nonac,row1,row2,location from bus_Details where start="trichy" and end="chennai";
 
 -- command 10
-select seatno from traver_details where bid=1;
+select seatno from travel_details where bid=1;
 
 -- command 11
-select location from traver_Details natural join bus_details where uid=1;  
+select location from travel_details natural join bus_details where uid=1;  
 
 -- command 12
 update bus_Details set location="trichy" where bid=1;

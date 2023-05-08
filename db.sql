@@ -64,7 +64,7 @@ cid int not null,
 foreign key (bid) references bus_details(bid),
 foreign key (cid) references company_details(cid));
 
-create table traver_details(
+create table travel_details(
 tid int auto_increment primary key,
 bid int,
 uid int,
