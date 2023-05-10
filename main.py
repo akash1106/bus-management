@@ -1,22 +1,43 @@
-import tkinter as tk
+mf=Frame(root,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
+    mf.grid()
+    tf=Frame(mf,bd=10,width=300,height=200,relief=RIDGE,bg="dark gray")
+    tf.grid(row=0,column=0)
+    lbt=Label(tf,font=("Times",30,'bold'),text="Company",bd=7)
+    lbt.grid(row=0,column=0)
+    lf=Frame(mf,bd=10,width=980,height=627,relief=RIDGE)
+    lf.grid(row=1,column=0)
+    llf=Frame(lf,bd=10,width=225,height=627,pady=50,relief=RIDGE)
+    llf.grid(row=0,column=0)
+    but1=Button(llf,bd=4,width=10,height=1,bg='white',command=bus,text="bus",font=("Times",20,'bold'))
+    but1.grid(row=0,column=0,pady=56,padx=15)
+    but2=Button(llf,bd=4,width=10,height=1,bg='white',command=staff,text="staff",font=("Times",20,'bold'))
+    but2.grid(row=1,column=0,pady=56,padx=15)
+    but3=Button(llf,bd=4,width=10,height=1,bg='white',command=logout,text="logout",font=("Times",20,'bold'))
+    but3.grid(row=2,column=0,pady=56,padx=15)
 
-root = tk.Tk()
-root.geometry("500x300")
+    rlf=LabelFrame(lf,bd=10,width=700,height=600,relief=RIDGE)
 
-def add():
-    tk.Entry(frame).grid()
+    mycanvas = Canvas(rlf)
+    mycanvas.pack(side=LEFT)
 
-def disable():
-    frame.configure(height=frame["height"],width=frame["width"])
-    frame.grid_propagate(0)
+    scrollbar = ttk.Scrollbar(rlf, orient="vertical", command=mycanvas.yview)
+    scrollbar.pack(side="right", fill="y")
 
-def enable():
-    frame.grid_propagate(1)
+    mycanvas.configure(yscrollcommand=scrollbar.set)
 
-frame = tk.Frame(root, height=100,width=150,bg="black")
-frame.grid(row=1,column=0)
+    mycanvas.bind('<configure>',lambda e: mycanvas.configure(scrollregion = mycanvas.bbox('all')))
 
-tk.Button(root, text="add widget", command=add).grid(row=0,column=0)
-tk.Button(root, text="disable propagation", command=disable).grid(row=0,column=1)
-tk.Button(root, text="enable propagation", command=enable).grid(row=0,column=2)
-root.mainloop()
+    tef=Frame(mycanvas)     
+    mycanvas.create_window((0,0),window=tef,anchor="nw")
+
+    rlf.pack(fill="both")
+    tef.grid(row=0,column=0)
+
+    for i in range(len(a)):
+        lab=Label(rlf,font=("Times",20,'bold'),text=a[i],bd=7)
+        lab.grid(row=i,column=1,pady=25)
+        ent=Entry(rlf,font=("Times",20,'bold'),textvariable=b[i],bd=5,width=15,bg='powder blue',relief=RIDGE)
+        ent.grid(row=i,column=2)
+    but1=Button(rlf,bd=4,width=10,height=1,bg='white',command=add,text="login",font=("Times",20,'bold'))
+    but1.grid(row=len(a),column=1,columnspan=2)
+    

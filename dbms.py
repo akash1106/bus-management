@@ -23,7 +23,7 @@ def insert_bus(mycon,cid,start,end,btype,atime,dtime,ac_nonac,row1,row2,location
     cursor.execute(st)
     mycon.commit()
 def insert_staff(mycon,fname,lname,sname,pas,phno,doorno,address,city,district,state,sex,job,bid,dob,aadhaar,cid):
-    st='''insert into staff_details(fname,lname,sname,pass,phno,doorno,address,city,district,state,sex,job,bid,dob,aadhaar,cid) values("{0}","{1}","{2}",AES_ENCRYPT("{3}","key"),{4},{5},"{6}","{7}","{8}","{9}","{10}","{11}",{12},"{13}",{14},{15}),'''.format(fname,lname,sname,pas,phno,doorno,address,city,district,state,sex,job,bid,dob,aadhaar,cid)
+    st='''insert into staff_details(fname,lname,sname,pass,phno,doorno,address,city,district,state,sex,job,bid,dob,aadhaar,cid) values("{0}","{1}","{2}",AES_ENCRYPT("{3}","key"),{4},{5},"{6}","{7}","{8}","{9}","{10}","{11}",{12},"{13}",{14},{15});'''.format(fname,lname,sname,pas,phno,doorno,address,city,district,state,sex,job,bid,dob,aadhaar,cid)
     cursor=mycon.cursor()
     cursor.execute(st)
     mycon.commit()

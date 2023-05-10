@@ -176,4 +176,3 @@ update company_details set rating=4.0 where cid=1;
 
 -- command 14
 update user_details set coin=100 where uid=1;
-  
