@@ -43,7 +43,7 @@ def check_company(mycon,cname,pas):
     cursor.execute(st)
     data=cursor.fetchall()
     return data
-def get_bus(mycon,cid):
+def get_bus_company(mycon,cid):
     st='''select bid,start,end,btype,bus_details.rating,atime,dtime,ac_nonac,location from bus_details where cid={0};'''.format(cid)
     cursor=mycon.cursor()
     cursor.execute(st)
@@ -119,3 +119,15 @@ def set_coin(mycon,coin,uid):
     cursor=mycon.cursor()
     cursor.execute(st)
     mycon.commit()
+def get_bus_company1(mycon,cid,bid):
+    st='''select start,end,atime,dtime from bus_details where cid={0} and bid={1};'''.format(cid,bid)
+    cursor=mycon.cursor()
+    cursor.execute(st)
+    data=cursor.fetchall()
+    return data
+def get_staff(mycon,cid):
+    st='''select fname,lname,phno,job,bid from staff_details where cid={0};'''.format(cid)
+    cursor=mycon.cursor()
+    cursor.execute(st)
+    data=cursor.fetchall()
+    return data
