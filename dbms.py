@@ -126,7 +126,13 @@ def get_bus_company1(mycon,cid,bid):
     data=cursor.fetchall()
     return data
 def get_staff(mycon,cid):
-    st='''select fname,lname,phno,job,bid from staff_details where cid={0};'''.format(cid)
+    st='''select fname,lname,phno,job,bid,sid from staff_details where cid={0};'''.format(cid)
+    cursor=mycon.cursor()
+    cursor.execute(st)
+    data=cursor.fetchall()
+    return data
+def get_staff_bus(mycon,sid):
+    st='''select bid from staff_details where sid={0};'''.format(sid)
     cursor=mycon.cursor()
     cursor.execute(st)
     data=cursor.fetchall()

@@ -102,7 +102,6 @@ def mainui(root,cid):
         mf.destroy()
         add_bus_for_company(root,cid)
     def update_bus(bid):
-        print(bid)
         mf.destroy()
         update_bus_C(root,cid,bid)
     pa=os.environ["dbpass"]
@@ -192,7 +191,6 @@ def add_bus_for_company(root,cid):
         insert_bus(mycon,cid,b[0].get(),b[1].get(),int(b[2].get()),b[3].get(),b[4].get(),int(b[5].get()),r1,r2,b[0].get())
         mycon.close()
         mf.destroy()
-        print("added")
         mainui(root,cid)
     mf=Frame(root,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
     mf.grid()
@@ -239,7 +237,9 @@ def add_bus_for_company(root,cid):
     but1.grid(row=len(a),column=1,columnspan=2)
     root.mainloop()
 def main_staff(root,cid):
-    print(cid)
+    pa=os.environ["dbpass"]
+    mycon=setup("localhost","root",pa,"bus_demo")
+    res=get_staff(mycon,cid)
     def bus():
         mf.destroy()
         mainui(root,cid)
@@ -249,15 +249,13 @@ def main_staff(root,cid):
     def logout():
         mf.destroy()
         login(root)
-    def update_staff(bid):
-        print(bid)
+    def update_staff(sid):
+        mf.destroy()
+        update_staff_in_app(root,sid,cid)
     def add_staff():
         mf.destroy()
         add_staff_company(root,cid)
-    pa=os.environ["dbpass"]
-    mycon=setup("localhost","root",pa,"bus_demo")
-    res=get_staff(mycon,cid)
-    print(res)
+
 
     mf=Frame(root,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
     mf.grid()
@@ -312,7 +310,7 @@ def main_staff(root,cid):
         l4.grid(row=1,column=1,padx=50)
         l5=Label(fra,font=("Times",10,'bold'),text=res[i][4],bd=7)
         l5.grid(row=0,column=2,padx=50)
-        b=(res[i][4])
+        b=(res[i][5])
         but=(Button(fra,bd=4,width=1,height=1,bg='white',command=partial(update_staff,b),text="-",font=("Times",8,'bold')))
         but.grid(row=0,column=3,padx=50)
 def add_staff_company(root,cid):
@@ -333,7 +331,6 @@ def add_staff_company(root,cid):
         insert_staff(mycon,b[0].get(),b[1].get(),b[2].get(),b[3].get(),int(b[4].get()),int(b[5].get()),b[6].get(),b[7].get(),b[8].get(),b[9].get(),b[10].get(),b[11].get(),int(b[12].get()),b[13].get(),int(b[14].get()),cid)
         mycon.close()
         mf.destroy()
-        print("added")
         main_staff(root,cid)
     mf=Frame(root,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
     mf.grid()
@@ -398,7 +395,6 @@ def update_bus_C(root,cid,bid):
         login(root)
     def update():
         update_bus_details(mycon,b[0].get(),b[1].get(),b[2].get(),b[3].get(),bid)
-        print(bid)
         mf.destroy()
         mainui(root,cid)
     mf=Frame(root,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
@@ -445,7 +441,71 @@ def update_bus_C(root,cid,bid):
     but1=Button(myframe,bd=4,width=10,height=1,bg='white',command=update,text="update",font=("Times",20,'bold'))
     but1.grid(row=len(a),column=1,columnspan=2)
     root.mainloop()
-def update_staff():
-    pass
+def update_staff_in_app(root,sid,cid):
+    a=["bus"]
+    b=[StringVar() for i in a]
+    pa=os.environ["dbpass"]
+    mycon=setup("localhost","root",pa,"bus_demo")
+    res=get_staff_bus(mycon,sid)
+    b[0].set(res[0][0])
+    for i in range(len(b)):
+        b[i].set(str(res[0][i]))
+    def bus():
+        mf.destroy()
+        mainui(root,cid)
+    def staff():
+        mf.destroy()
+        main_staff(root,cid)
+    def logout():
+        mf.destroy()
+        login(root)
+    def update():
+        update_Staff_details(mycon,int(b[0].get()),sid)
+        mf.destroy()
+        main_staff(root,cid)
+    mf=Frame(root,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
+    mf.grid()
+    tf=Frame(mf,bd=10,width=300,height=200,relief=RIDGE,bg="dark gray")
+    tf.grid(row=0,column=0)
+    lbt=Label(tf,font=("Times",30,'bold'),text="Company",bd=7)
+    lbt.grid(row=0,column=0)
+    lf=Frame(mf,bd=10,width=980,height=627,relief=RIDGE)
+    lf.grid(row=1,column=0)
+    llf=Frame(lf,bd=10,width=225,height=627,pady=50,relief=RIDGE)
+    llf.grid(row=0,column=0)
+    but1=Button(llf,bd=4,width=10,height=1,bg='white',command=bus,text="bus",font=("Times",20,'bold'))
+    but1.grid(row=0,column=0,pady=56,padx=15)
+    but2=Button(llf,bd=4,width=10,height=1,bg='white',command=staff,text="staff",font=("Times",20,'bold'))
+    but2.grid(row=1,column=0,pady=56,padx=15)
+    but3=Button(llf,bd=4,width=10,height=1,bg='white',command=logout,text="logout",font=("Times",20,'bold'))
+    but3.grid(row=2,column=0,pady=56,padx=15)
+
+
+    rlf=Frame(lf,bd=10,width=700,height=600,relief=RIDGE)
+    rlf.configure(height=rlf["height"],width=rlf["width"])
+    rlf.grid_propagate(0)
+
+    mycanvas=Canvas(rlf,bd=10,width=675,height=580)
+    mycanvas.pack(side=LEFT)
+
+    yscroll=ttk.Scrollbar(rlf,orient="vertical",command=mycanvas.yview)
+    yscroll.pack(side=RIGHT,fill="y")
+
+    mycanvas.configure(yscrollcommand=yscroll.set)
+
+    mycanvas.bind('<Configure>',lambda e: mycanvas.configure(scrollregion=mycanvas.bbox('all')))
+
+    myframe=Frame(mycanvas,bd=10,width=700,height=600,padx=100)
+    mycanvas.create_window((0,0),window=myframe,anchor="nw")
+    rlf.grid(row=0,column=1)
+    
+    for i in range(len(a)):
+        lab=Label(myframe,font=("Times",20,'bold'),text=a[i],bd=7)
+        lab.grid(row=i,column=1,pady=25)
+        ent=Entry(myframe,font=("Times",20,'bold'),textvariable=b[i],bd=5,width=15,bg='powder blue',relief=RIDGE)
+        ent.grid(row=i,column=2)
+    but1=Button(myframe,bd=4,width=10,height=1,bg='white',command=update,text="update",font=("Times",20,'bold'))
+    but1.grid(row=len(a),column=1,columnspan=2)
+    root.mainloop()
 root=start()
 login(root)
