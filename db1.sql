@@ -1,5 +1,6 @@
 create database bus_demo;
 use bus_demo;
+
 create table user_details(
 uid int auto_increment primary key,
 uname varchar(25) not null,
@@ -176,3 +177,5 @@ update company_details set rating=4.0 where cid=1;
 
 -- command 14
 update user_details set coin=100 where uid=1;
+
+select count(*),cid from bus_Details group by(cid);

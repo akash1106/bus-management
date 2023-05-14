@@ -13,7 +13,7 @@ def insert_company(mycon,Company_Name,User_Name,Password,Phno,Address,City,Distr
     mycon.commit()
 
 def insert_user(mycon,uname,pas,fname,phno,emphno,doorno,address,city,district,state,sex,mailid,dob,aadhaar):
-    st='''insert into user_details(uname,pass,fname,phno,emphno,doorno,address,city,district,state,sex,mailid,dob,aadhaar,coin) values('{0}'',AES_ENCRYPT('{1}','key'),'{2}',{3},{4},{5},"{6}","{7}","{8}","{9}","{10}","{11}","{12}",{13},0);'''.format(uname,pas,fname,phno,emphno,doorno,address,city,district,state,sex,mailid,dob,aadhaar)
+    st='''insert into user_details(uname,pass,fname,phno,emphno,doorno,address,city,district,state,sex,mailid,dob,aadhaar,coin) values('{0}',AES_ENCRYPT('{1}','key'),'{2}',{3},{4},{5},"{6}","{7}","{8}","{9}","{10}","{11}","{12}",{13},0);'''.format(uname,pas,fname,phno,emphno,doorno,address,city,district,state,sex,mailid,dob,aadhaar)
     cursor=mycon.cursor()
     cursor.execute(st)
     mycon.commit()
@@ -133,6 +133,13 @@ def get_staff(mycon,cid):
     return data
 def get_staff_bus(mycon,sid):
     st='''select bid from staff_details where sid={0};'''.format(sid)
+    cursor=mycon.cursor()
+    cursor.execute(st)
+    data=cursor.fetchall()
+    return data
+def get_user(mycon,uname,pas):
+    st='''select uid from user_details where uname="{0}" and pass=AES_ENCRYPT("{1}","key");'''.format(uname,pas)
+    print(st)
     cursor=mycon.cursor()
     cursor.execute(st)
     data=cursor.fetchall()
