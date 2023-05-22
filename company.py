@@ -150,24 +150,32 @@ def mainui(root,cid):
     for i in range(len(res)):
         fra=Frame(myframe,bd=10,width=685,height=100,relief=RIDGE,padx=35)
         fra.grid(row=i+1,column=0,)
-        l1=Label(fra,font=("Times",10,'bold'),text=res[i][1],bd=7)
+        l1=Label(fra,font=("Times",10,'bold'),text="start"+str(res[i][1]),bd=7)
         l1.grid(row=0,column=0,padx=50)
-        l2=Label(fra,font=("Times",10,'bold'),text=res[i][2],bd=7)
+        l2=Label(fra,font=("Times",10,'bold'),text="end"+str(res[i][2]),bd=7)
         l2.grid(row=1,column=0,padx=50)
-        l3=Label(fra,font=("Times",10,'bold'),text=res[i][5],bd=7)
+        l3=Label(fra,font=("Times",10,'bold'),text="arr"+str(res[i][5]),bd=7)
         l3.grid(row=0,column=1,padx=50)
-        l4=Label(fra,font=("Times",10,'bold'),text=res[i][6],bd=7)
+        l4=Label(fra,font=("Times",10,'bold'),text="des"+str(res[i][6]),bd=7)
         l4.grid(row=1,column=1,padx=50)
-        l5=Label(fra,font=("Times",10,'bold'),text=res[i][4],bd=7)
+        if res[i][4]==1:
+            typ="sleeper"
+        elif res[i][4]==2:
+            typ="seater"
+        else:
+            typ="hybrid"
+        l5=Label(fra,font=("Times",10,'bold'),text="type"+typ,bd=7)
         l5.grid(row=0,column=2,padx=50)
-        l6=Label(fra,font=("Times",10,'bold'),text=res[i][0],bd=7)
+        l6=Label(fra,font=("Times",10,'bold'),text="bid"+str(res[i][0]),bd=7)
         l6.grid(row=1,column=2,padx=50)
+        l7=Label(fra,font=("Times",10,'bold'),text="price"+str(res[i][9]),bd=7)
+        l7.grid(row=0,column=3,padx=50)
         b=(res[i][0])
         but=(Button(fra,bd=4,width=1,height=1,bg='white',command=partial(update_bus,b),text="-",font=("Times",8,'bold')))
-        but.grid(row=0,column=3,padx=50)
+        but.grid(row=1,column=3,padx=50)
     root.mainloop()
 def add_bus_for_company(root,cid):
-    a=["start","end","bus type","Arrival time","Departure time","ac_nonac"]
+    a=["start","end","bus type","Arrival time","Departure time","ac_nonac","price"]
     b=[StringVar() for i in a]
     def bus():
         mf.destroy()
@@ -188,7 +196,7 @@ def add_bus_for_company(root,cid):
             r1=r2=6
         else:
             r1,r2=13,6
-        insert_bus(mycon,cid,b[0].get(),b[1].get(),int(b[2].get()),b[3].get(),b[4].get(),int(b[5].get()),r1,r2,b[0].get())
+        insert_bus(mycon,cid,b[0].get(),b[1].get(),int(b[2].get()),b[3].get(),b[4].get(),int(b[5].get()),r1,r2,b[0].get(),int(b[6].get()))
         mycon.close()
         mf.destroy()
         mainui(root,cid)
@@ -377,7 +385,7 @@ def add_staff_company(root,cid):
     but1.grid(row=len(a),column=1,columnspan=2)
     root.mainloop()
 def update_bus_C(root,cid,bid):
-    a=["start","end","Arrival time","Departure time"]
+    a=["start","end","Arrival time","Departure time","price"]
     b=[StringVar() for i in a]
     pa=os.environ["dbpass"]
     mycon=setup("localhost","root",pa,"bus_demo")
@@ -394,7 +402,7 @@ def update_bus_C(root,cid,bid):
         mf.destroy()
         login(root)
     def update():
-        update_bus_details(mycon,b[0].get(),b[1].get(),b[2].get(),b[3].get(),bid)
+        update_bus_details(mycon,b[0].get(),b[1].get(),b[2].get(),b[3].get(),bid,int(b[4].get()))
         mf.destroy()
         mainui(root,cid)
     mf=Frame(root,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     

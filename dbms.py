@@ -17,8 +17,8 @@ def insert_user(mycon,uname,pas,fname,phno,emphno,doorno,address,city,district,s
     cursor=mycon.cursor()
     cursor.execute(st)
     mycon.commit()
-def insert_bus(mycon,cid,start,end,btype,atime,dtime,ac_nonac,row1,row2,location):
-    st='''insert into bus_details(cid,start,end,btype,rating,atime,dtime,ac_nonac,row1,row2,location) values({0},"{1}","{2}",{3},0.0,'{4}','{5}',{6},{7},{8},"{9}")'''.format(cid,start,end,btype,atime,dtime,ac_nonac,row1,row2,location)
+def insert_bus(mycon,cid,start,end,btype,atime,dtime,ac_nonac,row1,row2,location,price):
+    st='''insert into bus_details(cid,start,end,btype,rating,atime,dtime,ac_nonac,row1,row2,location,price) values({0},"{1}","{2}",{3},0.0,'{4}','{5}',{6},{7},{8},"{9}",{10})'''.format(cid,start,end,btype,atime,dtime,ac_nonac,row1,row2,location,price)
     cursor=mycon.cursor()
     cursor.execute(st)
     mycon.commit()
@@ -44,13 +44,13 @@ def check_company(mycon,cname,pas):
     data=cursor.fetchall()
     return data
 def get_bus_company(mycon,cid):
-    st='''select bid,start,end,btype,bus_details.rating,atime,dtime,ac_nonac,location from bus_details where cid={0};'''.format(cid)
+    st='''select bid,start,end,btype,bus_details.rating,atime,dtime,ac_nonac,location,price from bus_details where cid={0};'''.format(cid)
     cursor=mycon.cursor()
     cursor.execute(st)
     data=cursor.fetchall()
     return data
-def update_bus_details(mycon,start,end,atime,dtime,bid):
-    st='''update bus_details set start= "{0}" , end="{1}" , atime="{2}" , dtime="{3}" where bid={4};'''.format(start,end,atime,dtime,bid)
+def update_bus_details(mycon,start,end,atime,dtime,bid,price):
+    st='''update bus_details set start= "{0}" , end="{1}" , atime="{2}" , dtime="{3}",price={4} where bid={5};'''.format(start,end,atime,dtime,price,bid)
     cursor=mycon.cursor()
     cursor.execute(st)
     mycon.commit()
@@ -82,7 +82,7 @@ def set_active(mycon,active,tid):
     cursor.execute(st)
     mycon.commit()
 def get_bus(mycon,start,end):
-    st='''select bid,cid,btype,rating,atime,dtime,ac_nonac,row1,row2,location from bus_Details where start="{0}" and end="{1}";'''.format(start,end)
+    st='''select bid,cid,start,end,btype,rating,atime,dtime,ac_nonac,row1,row2,location,price from bus_Details where start="{0}" and end="{1}";'''.format(start,end)
     cursor=mycon.cursor()
     cursor.execute(st)
     data=cursor.fetchall()
@@ -139,8 +139,15 @@ def get_staff_bus(mycon,sid):
     return data
 def get_user(mycon,uname,pas):
     st='''select uid from user_details where uname="{0}" and pass=AES_ENCRYPT("{1}","key");'''.format(uname,pas)
-    print(st)
     cursor=mycon.cursor()
     cursor.execute(st)
     data=cursor.fetchall()
     return data
+
+def get_seatno(mycon,bid,dat):
+    st="select seatno from travel_details where bid={0} and dat={1} order by seatno desc;".format(bid,dat)
+    cursor=mycon.cursor()
+    cursor.execute(st)
+    data=cursor.fetchall()
+    return data
+
