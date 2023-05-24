@@ -1,5 +1,6 @@
 create database bus_demo;
 use bus_demo;
+drop database bus_Demo;
 
 create table user_details(
 uid int auto_increment primary key,
@@ -48,6 +49,7 @@ ac_nonac int not null,
 row1 int not null,
 row2 int not null,
 location varchar(25) not null,
+price int not null,
 foreign key(cid) references company_details(cid));
 
 create table staff_details(
@@ -95,7 +97,7 @@ values("akash",AES_ENCRYPT("pass1","key"),"akash",9876543210,1234567890,31,"reng
 ("abi",AES_ENCRYPT("pass1","key"),"abi",3216549870,1478523690,12,"sri nagar","sri","coimbatore","tamilnadu","f","abi123@gmail.com","2004-05-12",3698527410,0),
 ("ranjith",AES_ENCRYPT("pass1","key"),"ranjith",1598746320,9512368740,58,"ram nagar","tech park","trichy","tamilnadu","m","ranjith@gmail.com","2003-05-03",7539861420,0),
 ("pranesh",AES_ENCRYPT("pass1","key"),"pranesh",167943820,943671820,85,"fire nagar","RS Puram","Coimbatore","tamilnadu","m","pranesh001@gmail.com","2003-08-11",7536492810,0);
-select * from user_Details;
+select uname,AES_DECRYPT(pass,"key") from user_Details;
 insert into company_details(name,cname,pass,phno,address,city,district,state,noofbus,rating,tandc)
 values("akash","akash",AES_ENCRYPT("pass2","key"),9876543210,"king road","Nesapakkam","Chennai","tamilnadu",5,3.5,"allcome"),
 ("ram","ram",AES_ENCRYPT("pass2","key"),4683219705,"sri road","tech park","Chennai","tamilnadu",3,4.8,"allcome"),
@@ -103,12 +105,12 @@ values("akash","akash",AES_ENCRYPT("pass2","key"),9876543210,"king road","Nesapa
 ("Alka_Talwar","Alka_Talwar",AES_ENCRYPT("pass2","key"),4568239710,"Cruz Puram","Thoothukudi","Thoothukudi","tamilnadu",3,4.2,"allcome"),
 ("Chandni_Sankaran","Chandni_Sankaran",AES_ENCRYPT("pass2","key"),7139468250,"V.V.Nagar","Tisaiyanvilai","Tirunelveli","tamilnadu",6,4.7,"allcome");
 select * from company_details;
-insert into bus_details(cid,start,end,btype,rating,atime,dtime,ac_nonac,row1,row2,location)
-values(1,"trichy","chennai",1,4.8,'08:00:00','12:00:00',1,6,6,"trichy"),
-(2,"Coimbatore","chennai",2,3.9,'14:00:00','23:00:00',1,13,15,"chennai"),
-(3,"Kelambakkam","Coimbatore",3,4.3,'01:00:00','13:00:00',1,13,6,"coimbatore"),
-(4,"Vellore","Kelambakkam",2,3.9,'06:00:00','13:00:00',0,13,15,"Vellore"),
-(5,"Vellore","trichy",2,4.9,'02:00:00','13:00:00',0,13,15,"trichy");
+insert into bus_details(cid,start,end,btype,rating,atime,dtime,ac_nonac,row1,row2,location,price)
+values(1,"trichy","chennai",1,4.8,'08:00:00','12:00:00',1,6,6,"trichy",1000),
+(2,"Coimbatore","chennai",2,3.9,'14:00:00','23:00:00',1,13,15,"chennai",1000),
+(3,"Kelambakkam","Coimbatore",3,4.3,'01:00:00','13:00:00',1,13,6,"coimbatore",1000),
+(4,"Vellore","Kelambakkam",2,3.9,'06:00:00','13:00:00',0,13,15,"Vellore",1000),
+(5,"Vellore","trichy",2,4.9,'02:00:00','13:00:00',0,13,15,"trichy",1000);
 select * from bus_Details;
 insert into staff_details(fname,lname,sname,pass,phno,doorno,address,city,district,state,sex,job,bid,dob,aadhaar,cid)
 values("Nishi","Dhingra","Nishi",AES_ENCRYPT("pass3","key"),7896321450,23,"Poonamalle High Rd","Aminjikarai","chennai","tamilnadu","f","d",1,"1998-06-12",9873214650,1),
@@ -178,4 +180,10 @@ update company_details set rating=4.0 where cid=1;
 -- command 14
 update user_details set coin=100 where uid=1;
 
-select count(*),cid from bus_Details group by(cid);
+select uid from user_details where uname="akash";
+
+select bid from travel_details where uid=6;
+
+alter table bus_Details add price int;
+
+update bus_details set price=1000 where price=Null;

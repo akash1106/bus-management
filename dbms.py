@@ -105,12 +105,12 @@ def change_location(mycon,location,bid):
     cursor.execute(st)
     mycon.commit()
 def update_Rating_bus(mycon,rating,bid):
-    st='''update bus_details set rating={0} where bid={1};'''.format(rating,bid)
+    st='''update bus_details set rating=(rating+{0})/2 where bid={1};'''.format(rating,bid)
     cursor=mycon.cursor()
     cursor.execute(st)
     mycon.commit()
 def update_Rating_com(mycon,rating,cid):
-    st='''update company_details set rating={0} where cid={1};'''.format(rating,cid)
+    st='''update company_details set rating=(rating+{0})/2 where cid={1};'''.format(rating,cid)
     cursor=mycon.cursor()
     cursor.execute(st)
     mycon.commit()
@@ -151,3 +151,16 @@ def get_seatno(mycon,bid,dat):
     data=cursor.fetchall()
     return data
 
+def get_booked_bus(mycon,uid):
+    st='''select start,end,atime,dtime,location,bid,dat,seatno,active,tid from travel_details natural join bus_Details where uid={0}'''.format(uid)
+    cursor=mycon.cursor()
+    cursor.execute(st)
+    data=cursor.fetchall()
+    return data
+
+def get_cid(mycon,bid):
+    st='''select cid from bus_details where bid={0}'''.format(bid)
+    cursor=mycon.cursor()
+    cursor.execute(st)
+    data=cursor.fetchall()
+    return data

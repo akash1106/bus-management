@@ -94,33 +94,11 @@ def register(root):
     root.mainloop()
 def mainui(root,uid):
     def book():
-        pass
+        mf.destroy()
+        mainui(root,uid)
     def mybooking():
-        pass
-    def logout():
-        pass
-    mf=Frame(root,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
-    mf.grid()
-    tf=Frame(mf,bd=10,width=300,height=200,relief=RIDGE,bg="dark gray")
-    tf.grid(row=0,column=0)
-    lbt=Label(tf,font=("Times",30,'bold'),text="Company",bd=7)
-    lbt.grid(row=0,column=0)
-    lf=Frame(mf,bd=10,width=980,height=627,relief=RIDGE)
-    lf.grid(row=1,column=0)
-    llf=Frame(lf,bd=10,width=225,height=627,pady=50,relief=RIDGE)
-    llf.grid(row=0,column=0)
-    but1=Button(llf,bd=4,width=10,height=1,bg='white',command=book,text="book",font=("Times",20,'bold'))
-    but1.grid(row=0,column=0,pady=56,padx=15)
-    but2=Button(llf,bd=4,width=10,height=1,bg='white',command=mybooking,text="my booking",font=("Times",20,'bold'))
-    but2.grid(row=1,column=0,pady=56,padx=15)
-    but3=Button(llf,bd=4,width=10,height=1,bg='white',command=logout,text="logout",font=("Times",20,'bold'))
-    but3.grid(row=2,column=0,pady=56,padx=15)
-
-def mainui(root,uid):
-    def book():
-        pass
-    def mybooking():
-        pass
+        mf.destroy()
+        mybook(root,uid)
     def logout():
         mf.destroy()
         login(root)
@@ -177,25 +155,29 @@ def mainui(root,uid):
     but1=Button(myframe,bd=4,width=10,height=1,bg='white',command=partial(sumbit,fro,to,dat),text="book",font=("Times",20,'bold'))
     but1.grid(row=1,column=3,columnspan=2,pady=56)
 
-    img = ImageTk.PhotoImage(Image.open("image.jpeg"))
-    imgLab=Label(myframe,image=img)
-    imgLab.grid(row=2,column=0,columnspan=6)
+    # img = ImageTk.PhotoImage(Image.open("image.jpeg"))
+    # imgLab=Label(myframe,image=img)
+    # imgLab.grid(row=2,column=0,columnspan=6)
 
 
     root.mainloop()
 
 def disbus(root,res,dat,uid):
     def book():
-        pass
+        mf.destroy()
+        mainui(root,uid)
     def mybooking():
-        pass
+        mf.destroy()
+        mybook(root,uid)
     def logout():
         mf.destroy()
         login(root)
-    def conformbook(bid,dat,data,left):
-        print(bid,dat)
+    def conformbook(bid,dat,left,next):
         if left>0:
-            pass
+            insert_travel(mycon,bid,uid,dat,next+1,0)
+            mf.destroy()
+            mainui(root,uid)
+
     
     mf=Frame(root,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
     mf.grid()
@@ -267,8 +249,109 @@ def disbus(root,res,dat,uid):
         l8=Label(fra,font=("Times",10,'bold'),text="seat left : "+str(res[i][9]+res[i][10]-da1[0][0]),bd=7)
         l8.grid(row=3,column=1,padx=25)
 
-        but=(Button(fra,bd=4,bg='white',command=partial(conformbook,res[i][0],dat,res[i],da1[0][0]),text="book",font=("Times",8,'bold')))
+        but=(Button(fra,bd=4,bg='white',command=partial(conformbook,res[i][0],dat,res[i][9]+res[i][10]-da1[0][0],da1[0][0]),text="book",font=("Times",8,'bold')))
         but.grid(row=3,column=1,columnspan=2,padx=50)
+
+def mybook(root,uid):
+    def book():
+        mf.destroy()
+        mainui(root,uid)
+    def mybooking():
+        mf.destroy()
+        mybook(root,uid)
+    def logout():
+        mf.destroy()
+        login(root)
+    def review(tid,bid,uid):
+        mf.destroy()
+        reviewpage(root,uid,bid)
+
+    mf=Frame(root,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
+    mf.grid()
+    tf=Frame(mf,bd=10,width=300,height=200,relief=RIDGE,bg="dark gray")
+    tf.grid(row=0,column=0)
+    lbt=Label(tf,font=("Times",30,'bold'),text="Company",bd=7)
+    lbt.grid(row=0,column=0)
+    lf=Frame(mf,bd=10,width=980,height=627,relief=RIDGE)
+    lf.grid(row=1,column=0)
+    llf=Frame(lf,bd=10,width=225,height=627,pady=50,relief=RIDGE)
+    llf.grid(row=0,column=0)
+    but1=Button(llf,bd=4,width=10,height=1,bg='white',command=book,text="book",font=("Times",20,'bold'))
+    but1.grid(row=0,column=0,pady=56,padx=15)
+    but2=Button(llf,bd=4,width=10,height=1,bg='white',command=mybooking,text="my booking",font=("Times",20,'bold'))
+    but2.grid(row=1,column=0,pady=56,padx=15)
+    but3=Button(llf,bd=4,width=10,height=1,bg='white',command=logout,text="logout",font=("Times",20,'bold'))
+    but3.grid(row=2,column=0,pady=56,padx=15)
+
+    rlf=Frame(lf,bd=10,width=700,height=600,relief=RIDGE)
+    rlf.configure(height=rlf["height"],width=rlf["width"])
+    rlf.grid_propagate(0)
+
+    mycanvas=Canvas(rlf,bd=10,width=675,height=580)
+    mycanvas.pack(side=LEFT)
+
+    yscroll=ttk.Scrollbar(rlf,orient="vertical",command=mycanvas.yview)
+    yscroll.pack(side=RIGHT,fill="y")
+
+    mycanvas.configure(yscrollcommand=yscroll.set)
+
+    mycanvas.bind('<Configure>',lambda e: mycanvas.configure(scrollregion=mycanvas.bbox('all')))
+
+    myframe=Frame(mycanvas,bd=10,width=700,height=600)
+    mycanvas.create_window((0,0),window=myframe,anchor="nw")
+    rlf.grid(row=0,column=1)
+    res=get_booked_bus(mycon,uid)
+
+    for i in range(len(res)):
+        fra=Frame(myframe,bd=10,width=685,height=100,relief=RIDGE,padx=35)
+        fra.grid(row=i+1,column=0,)
+        l1=Label(fra,font=("Times",10,'bold'),text="start"+res[i][0],bd=7)
+        l1.grid(row=0,column=0,padx=25)
+        l2=Label(fra,font=("Times",10,'bold'),text="end"+res[i][1],bd=7)
+        l2.grid(row=1,column=0,padx=25)
+        l3=Label(fra,font=("Times",10,'bold'),text="arrive time"+str(res[i][2]),bd=7)
+        l3.grid(row=0,column=1,padx=25)
+        l4=Label(fra,font=("Times",10,'bold'),text="destination time"+str(res[i][3]),bd=7)
+        l4.grid(row=1,column=1,padx=25)
+        l5=Label(fra,font=("Times",10,'bold'),text="location"+str(res[i][4]),bd=7)
+        l5.grid(row=0,column=2,padx=25)
+        l6=Label(fra,font=("Times",10,'bold'),text="date"+str(res[i][6]),bd=7)
+        l6.grid(row=1,column=2,padx=25)
+        l7=Label(fra,font=("Times",10,'bold'),text="seatno"+str(res[i][7]),bd=7)
+        l7.grid(row=0,column=3,padx=25)
+        if res[i][8]==1:
+            but=Button(fra,bd=4,width=1,height=1,bg='white',command=partial(review,res[i][9],res[i][5],uid),text="+",font=("Times",8,'bold'))
+            but.grid(row=1,column=3)
+
+def reviewpage(root,uid,bid):
+    def add():
+        insert_busrandr(mycon,bid,uid,re.get(),float(ra.get()))
+        update_Rating_bus(mycon,float(ra.get()),bid)
+        res=get_cid(mycon,bid)
+        update_Rating_com(mycon,float(ra.get()),res[0][0])
+        mf.destroy()
+        mainui(root,uid)
+    mf=Frame(root,padx=240,pady=150,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
+    mf.grid()
+    tf=Frame(mf,bd=10,width=300,height=100,relief=RIDGE,bg="dark gray")
+    tf.grid(row=0,column=0)
+    lbt=Label(tf,font=("Times",30,'bold'),text="REVIEW",bd=7)
+    lbt.grid(row=0,column=0)
+    lf=Frame(mf,bd=10,width=500,height=500,relief=RIDGE,padx=43,pady=50)
+    lf.grid(row=1,column=0)
+    l1=Label(lf,font=("Times",20,'bold'),text="rating :",bd=7,width=8,pady=15)
+    l1.grid(row=0,column=0)
+    ra=StringVar()
+    e1=Entry(lf,font=("Times",20,'bold'),textvariable=ra,bd=5,width=15,bg='powder blue',relief=RIDGE)
+    e1.grid(row=0,column=1)
+    l2=Label(lf,font=("Times",20,'bold'),text="review :",bd=7,width=8,pady=25)
+    l2.grid(row=1,column=0)
+    re=StringVar()
+    e2=Entry(lf,font=("Times",20,'bold'),textvariable=re,bd=5,width=15,bg='powder blue',relief=RIDGE)
+    e2.grid(row=1,column=1)
+    but1=Button(lf,bd=4,width=10,height=1,bg='white',command=add,text="sumbit",font=("Times",20,'bold'))
+    but1.grid(row=2,column=0)
+
 
 root=start()
 login(root)
