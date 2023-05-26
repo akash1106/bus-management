@@ -71,7 +71,7 @@ def check_staff(mycon,sname,pas):
     data=cursor.fetchall()
     return data
 def get_person_on_bus(mycon,bid):
-    st='''select fname,uid,tid from travel_details natural join user_Details where bid={0};'''.format(bid)
+    st='''select fname,uid,tid from travel_details natural join user_Details where bid={0} and dat=curdate();'''.format(bid)
     cursor=mycon.cursor()
     cursor.execute(st)
     data=cursor.fetchall()
