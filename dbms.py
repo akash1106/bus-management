@@ -120,7 +120,7 @@ def set_coin(mycon,coin,uid):
     cursor.execute(st)
     mycon.commit()
 def get_bus_company1(mycon,cid,bid):
-    st='''select start,end,atime,dtime from bus_details where cid={0} and bid={1};'''.format(cid,bid)
+    st='''select start,end,atime,dtime,price from bus_details where cid={0} and bid={1};'''.format(cid,bid)
     cursor=mycon.cursor()
     cursor.execute(st)
     data=cursor.fetchall()
@@ -160,6 +160,12 @@ def get_booked_bus(mycon,uid):
 
 def get_cid(mycon,bid):
     st='''select cid from bus_details where bid={0}'''.format(bid)
+    cursor=mycon.cursor()
+    cursor.execute(st)
+    data=cursor.fetchall()
+    return data
+def get_all_bid(mycon,cid):
+    st='''select distinct bid from bus_Details where cid={0};'''.format(cid)
     cursor=mycon.cursor()
     cursor.execute(st)
     data=cursor.fetchall()
