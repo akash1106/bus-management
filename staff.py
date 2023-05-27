@@ -1,10 +1,9 @@
 from tkinter import *
-from PIL import ImageTk, Image
+from tkinter import messagebox
 from tkcalendar import *
 from tkinter import ttk
 from dbms import *
 import os
-from functools import partial
 
 pa=os.environ["dbpass"]
 mycon=setup("localhost","root",pa,"bus_demo")
@@ -15,10 +14,15 @@ def start():
     return root
 def login(root):
     def log():
-        res=check_staff(mycon,username.get(),passw.get())
-        if res:
-            mf.destroy()
-            mainui(root,res[0][1])
+        try:
+            res=check_staff(mycon,username.get(),passw.get())
+            if res:
+                mf.destroy()
+                mainui(root,res[0][1])
+            else:
+                messagebox.showwarning("login","no data match")
+        except Exception as e:
+            messagebox.showerror("Error",e)
     mf=Frame(root,padx=240,pady=150,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
     mf.grid()
     tf=Frame(mf,bd=10,width=300,height=100,relief=RIDGE,bg="dark gray")
@@ -40,17 +44,20 @@ def login(root):
     but1=Button(lf,bd=4,width=10,height=1,bg='white',command=log,text="login",font=("Times",20,'bold'))
     but1.grid(row=2,column=0,columnspan=2)
     root.mainloop()
-
 def mainui(root,bid):
-    res=get_person_on_bus(mycon,bid)
+    try:
+        res=get_person_on_bus(mycon,bid)
+    except Exception as e:
+        messagebox.showerror("Error",e)
     select=[]
     def atten():
-        print(select)
-        for i in select:
-            set_active(mycon,1,i)
+        try:
+            for i in select:
+                set_active(mycon,1,i)
+        except Exception as e:
+            messagebox.showerror("Error",e)
     def attendance():
-        mf.destroy()
-        mainui(root,bid)
+        pass
     def change_loc():
         mf.destroy()
         change_l(root,bid)
@@ -99,11 +106,13 @@ def mainui(root,bid):
             a+=1
         but=Button(myframe,bd=4,width=10,height=1,bg='white',command=atten,text="submit",font=("Times",20,'bold'))
         but.grid(row=len(res),column=0)
-    mainloop()
-        
+    mainloop()       
 def change_l(root,bid):
     def change():
-        change_location(mycon,loc.get(),bid)
+        try:
+            change_location(mycon,loc.get(),bid)
+        except Exception as e:
+            messagebox.showerror("Error",e)
     def attendance():
         mf.destroy()
         mainui(root,bid)

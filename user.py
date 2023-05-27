@@ -1,8 +1,9 @@
 from tkinter import *
-from PIL import ImageTk, Image
+from tkinter import messagebox
 from tkcalendar import *
 from tkinter import ttk
 from dbms import *
+import time
 import os
 from functools import partial
 
@@ -17,10 +18,15 @@ def start():
 
 def login(root):
     def log():
-        res=get_user(mycon,username.get(),passw.get()) 
-        if res:
-            mf.destroy()
-            mainui(root,res[0][0])  
+        try:
+            res=get_user(mycon,username.get(),passw.get()) 
+            if res:
+                mf.destroy()
+                mainui(root,res[0][0])  
+            else:
+                messagebox.showinfo("login","no match found")
+        except Exception as e:
+            messagebox.showerror("Error",e)
     def reg():
         mf.destroy()
         register(root)
@@ -54,9 +60,12 @@ def register(root):
         mf.destroy()
         login(root)
     def reg():
-        insert_user(mycon,b[0].get(),b[1].get(),b[2].get(),int(b[3].get()),int(b[4].get()),int(b[5].get()),b[6].get(),b[7].get(),b[8].get(),b[9].get(),b[10].get(),b[11].get(),b[12].get(),int(b[13].get()))
-        mf.destroy()
-        login(root)
+        try:
+            insert_user(mycon,b[0].get(),b[1].get(),b[2].get(),int(b[3].get()),int(b[4].get()),int(b[5].get()),b[6].get(),b[7].get(),b[8].get(),b[9].get(),b[10].get(),b[11].get(),b[12].get(),int(b[13].get()))
+            mf.destroy()
+            login(root)
+        except Exception as e:
+            messagebox.showerror("Error",e)
     mf=Frame(root,padx=260,pady=65,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
     mf.grid()
     tf=Frame(mf,bd=10,width=300,height=100,relief=RIDGE,bg="dark gray")
@@ -85,8 +94,17 @@ def register(root):
     for i in range(len(a)):
         lab=Label(myframe,font=("Times",20,'bold'),text=a[i],bd=7)
         lab.grid(row=i,column=0)
-        ent=Entry(myframe,font=("Times",20,'bold'),textvariable=b[i],bd=5,width=15,bg='powder blue',relief=RIDGE)
-        ent.grid(row=i,column=1)
+        if i==10:
+            drop = ttk.Combobox(
+                myframe,
+                state="readonly",
+                values=['m','f'],
+                textvariable=b[i]
+            )
+            drop.grid(row=i,column=1)
+        else:
+            ent=Entry(myframe,font=("Times",20,'bold'),textvariable=b[i],bd=5,width=15,bg='powder blue',relief=RIDGE)
+            ent.grid(row=i,column=1)
     but1=Button(myframe,bd=4,width=10,height=1,bg='white',command=log,text="login",font=("Times",20,'bold'))
     but1.grid(row=len(a),column=0)
     but2=Button(myframe,bd=4,width=10,height=1,bg='white',command=reg,text="register",font=("Times",20,'bold'))
@@ -103,10 +121,30 @@ def mainui(root,uid):
         mf.destroy()
         login(root)
     def sumbit(fro,to,dat):
-        res=get_bus(mycon,fro.get(),to.get())
-        dat=dat.get()
-        mf.destroy()
-        disbus(root,res,dat,uid)
+        try:
+            res=get_bus(mycon,fro.get(),to.get())
+            dat=dat.get()
+            mf.destroy()
+            disbus(root,res,dat,uid)
+        except Exception as e:
+            messagebox.showerror("Error",e)
+
+    def display_time():  
+        hour = str(time.strftime("%H"))  
+        minute = str(time.strftime("%M"))  
+        second = str(time.strftime("%S"))  
+        if int(hour) >= 12 and int(hour) < 24 and int (minute) >= 0:  
+            meridiem_label.config(text = "PM")    
+        else:  
+            meridiem_label.config(text = "AM")   
+        if int(hour) > 12:  
+            hour = str((int(hour) - 12))  
+        elif int(hour) == 0:  
+            hour = str(12)  
+        hour_label.config(text = hour)  
+        minute_label.config(text = minute)  
+        second_label.config(text = second)  
+        hour_label.after(200, display_time)  
 
     mf=Frame(root,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
     mf.grid()
@@ -116,7 +154,7 @@ def mainui(root,uid):
     lbt.grid(row=0,column=0)
     lf=Frame(mf,bd=10,width=980,height=627,relief=RIDGE)
     lf.grid(row=1,column=0)
-    llf=Frame(lf,bd=10,width=225,height=627,pady=50,relief=RIDGE)
+    llf=Frame(lf,bd=10,width=250,height=627,pady=50,relief=RIDGE)
     llf.grid(row=0,column=0)
     but1=Button(llf,bd=4,width=10,height=1,bg='white',command=book,text="book",font=("Times",20,'bold'))
     but1.grid(row=0,column=0,pady=56,padx=15)
@@ -125,7 +163,7 @@ def mainui(root,uid):
     but3=Button(llf,bd=4,width=10,height=1,bg='white',command=logout,text="logout",font=("Times",20,'bold'))
     but3.grid(row=2,column=0,pady=56,padx=15)
 
-    myframe=Frame(lf,bd=10,width=700,height=600,relief=RIDGE)
+    myframe=Frame(lf,bd=10,width=730,height=600,relief=RIDGE)
     myframe.configure(height=myframe["height"],width=myframe["width"])
     myframe.grid_propagate(0)
     myframe.grid(row=0,column=1)
@@ -136,32 +174,86 @@ def mainui(root,uid):
 
     fromlab=Label(myframe,font=("Times",20,'bold'),text="From :",bd=7)
     fromlab.grid(row=0,column=0)
-    froment=Entry(myframe,font=("Times",20,'bold'),text=fro,bd=5,width=13,bg='powder blue')
+    froment=Entry(myframe,font=("Times",20,'bold'),text=fro,bd=5,width=12,bg='powder blue')
     froment.grid(row=0,column=1)
 
-    emp=Label(myframe,font=("Times",20,'bold'),text="",bd=7)
-    emp.grid(row=0,column=2,padx=25,pady=15)
 
     tolab=Label(myframe,font=("Times",20,'bold'),text="To:",bd=7)
-    tolab.grid(row=0,column=3)
-    toent=Entry(myframe,font=("Times",20,'bold'),text=to,bd=5,width=13,bg='powder blue')
-    toent.grid(row=0,column=4)
+    tolab.grid(row=0,column=2)
+    toent=Entry(myframe,font=("Times",20,'bold'),text=to,bd=5,width=12,bg='powder blue')
+    toent.grid(row=0,column=3)
 
     datelab=Label(myframe,font=("Times",20,'bold'),text="Date",bd=7)
     datelab.grid(row=1,column=0)
-    dateEnt=Entry(myframe,font=("Times",20,'bold'),text=dat,bd=5,width=13,bg='powder blue')
-    dateEnt.grid(row=1,column=1)
+    doben=DateEntry(myframe,font=("Times",20,'bold'),bd=5,width=10,date_pattern='yyyy-mm-dd',textvariable=dat)
+    doben.grid(row=1,column=1)
+
+    body_frame=Frame(myframe)
+    body_frame.grid(row=2,column=0,columnspan=2)
+
+    hour_label = Label(  
+        body_frame,  
+        text = "00",  
+        font = ("radioland", "15"),  
+        bg = "#2C3C3F",  
+        fg = "#00D2FF"  
+        )  
+    colon_label_one = Label(  
+        body_frame,  
+        text = ":",  
+        font = ("radioland", "15"),  
+        bg = "#2C3C3F",  
+        fg = "#00D2FF"  
+        )  
+    minute_label = Label(  
+        body_frame,  
+        text = "00",  
+        font = ("radioland", "15"),  
+        bg = "#2C3C3F",  
+        fg = "#00D2FF"  
+        )  
+    colon_label_two = Label(  
+        body_frame,  
+        text = ":",  
+        font = ("radioland", "15"),  
+        bg = "#2C3C3F",  
+        fg = "#00D2FF"  
+        )  
+    second_label = Label(  
+        body_frame,  
+        text = "00",  
+        font = ("radioland", "15"),  
+        bg = "#2C3C3F",  
+        fg = "#00D2FF"  
+        )  
+    meridiem_label = Label(  
+        body_frame,  
+        text = "AM",  
+        font = ("radioland", "15"),  
+        bg = "#2C3C3F",  
+        fg = "#00D2FF"  
+        )   
+    hour_label.grid(row = 0, column = 0, padx = 5, pady = 5)  
+    colon_label_one.grid(row = 0, column = 1, padx = 5, pady = 5)  
+    minute_label.grid(row = 0, column = 2, padx = 5, pady = 5)  
+    colon_label_two.grid(row = 0, column = 3, padx = 5, pady = 5)  
+    second_label.grid(row = 0, column = 4, padx = 5, pady = 5)  
+    meridiem_label.grid(row = 0, column = 5, padx = 5, pady = 5)  
+    display_time()  
+
+    left=Frame(myframe)
+    left.grid(row=2,column=2,columnspan=3)
+
+    cal=Calendar(left,selectmode="day",date_pattern='dd/mm/yyyy',font=("Times",20,'bold'))
+    cal.grid()
 
     but1=Button(myframe,bd=4,width=10,height=1,bg='white',command=partial(sumbit,fro,to,dat),text="book",font=("Times",20,'bold'))
     but1.grid(row=1,column=3,columnspan=2,pady=56)
 
-    # img = ImageTk.PhotoImage(Image.open("image.jpeg"))
-    # imgLab=Label(myframe,image=img)
-    # imgLab.grid(row=2,column=0,columnspan=6)
+    
 
 
     root.mainloop()
-
 def disbus(root,res,dat,uid):
     def book():
         mf.destroy()
@@ -174,9 +266,12 @@ def disbus(root,res,dat,uid):
         login(root)
     def conformbook(bid,dat,left,next):
         if left>0:
-            insert_travel(mycon,bid,uid,dat,next+1,0)
-            mf.destroy()
-            mainui(root,uid)
+            try:
+                insert_travel(mycon,bid,uid,dat,next+1,0)
+                mf.destroy()
+                mainui(root,uid)
+            except Exception as e:
+                messagebox.showerror("Error",e)
 
     
     mf=Frame(root,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
@@ -220,9 +315,9 @@ def disbus(root,res,dat,uid):
         l1.grid(row=0,column=0,padx=25)
         l2=Label(fra,font=("Times",10,'bold'),text="To:"+res[i][3],bd=7)
         l2.grid(row=1,column=0,padx=25)
-        l3=Label(fra,font=("Times",10,'bold'),text="Arr:"+str(res[i][6]),bd=7)
+        l3=Label(fra,font=("Times",10,'bold'),text="Arrival:"+str(res[i][6]),bd=7)
         l3.grid(row=0,column=1,padx=25)
-        l4=Label(fra,font=("Times",10,'bold'),text="Des:"+str(res[i][7]),bd=7)
+        l4=Label(fra,font=("Times",10,'bold'),text="Departure:"+str(res[i][7]),bd=7)
         l4.grid(row=1,column=1,padx=25)
         if res[i][4]==1:
             typ="sleeper"
@@ -251,14 +346,12 @@ def disbus(root,res,dat,uid):
 
         but=(Button(fra,bd=4,bg='white',command=partial(conformbook,res[i][0],dat,res[i][9]+res[i][10]-da1[0][0],da1[0][0]),text="book",font=("Times",8,'bold')))
         but.grid(row=3,column=1,columnspan=2,padx=50)
-
 def mybook(root,uid):
     def book():
         mf.destroy()
         mainui(root,uid)
     def mybooking():
-        mf.destroy()
-        mybook(root,uid)
+        pass
     def logout():
         mf.destroy()
         login(root)
@@ -305,32 +398,41 @@ def mybook(root,uid):
     for i in range(len(res)):
         fra=Frame(myframe,bd=10,width=685,height=100,relief=RIDGE,padx=35)
         fra.grid(row=i+1,column=0,)
-        l1=Label(fra,font=("Times",10,'bold'),text="start"+res[i][0],bd=7)
+        l1=Label(fra,font=("Times",10,'bold'),text="start: "+res[i][0],bd=7)
         l1.grid(row=0,column=0,padx=25)
-        l2=Label(fra,font=("Times",10,'bold'),text="end"+res[i][1],bd=7)
+        l2=Label(fra,font=("Times",10,'bold'),text="end: "+res[i][1],bd=7)
         l2.grid(row=1,column=0,padx=25)
-        l3=Label(fra,font=("Times",10,'bold'),text="arrive time"+str(res[i][2]),bd=7)
+        l3=Label(fra,font=("Times",10,'bold'),text="arrive time: "+str(res[i][2]),bd=7)
         l3.grid(row=0,column=1,padx=25)
-        l4=Label(fra,font=("Times",10,'bold'),text="destination time"+str(res[i][3]),bd=7)
+        l4=Label(fra,font=("Times",10,'bold'),text="destination time: "+str(res[i][3]),bd=7)
         l4.grid(row=1,column=1,padx=25)
-        l5=Label(fra,font=("Times",10,'bold'),text="location"+str(res[i][4]),bd=7)
+        l5=Label(fra,font=("Times",10,'bold'),text="location: "+str(res[i][4]),bd=7)
         l5.grid(row=0,column=2,padx=25)
-        l6=Label(fra,font=("Times",10,'bold'),text="date"+str(res[i][6]),bd=7)
+        l6=Label(fra,font=("Times",10,'bold'),text="date: "+str(res[i][6]),bd=7)
         l6.grid(row=1,column=2,padx=25)
-        l7=Label(fra,font=("Times",10,'bold'),text="seatno"+str(res[i][7]),bd=7)
+        l7=Label(fra,font=("Times",10,'bold'),text="seatno: "+str(res[i][7]),bd=7)
         l7.grid(row=0,column=3,padx=25)
         if res[i][8]==1:
             but=Button(fra,bd=4,width=1,height=1,bg='white',command=partial(review,res[i][9],res[i][5],uid),text="+",font=("Times",8,'bold'))
             but.grid(row=1,column=3)
-
 def reviewpage(root,uid,bid):
     def add():
-        insert_busrandr(mycon,bid,uid,re.get(),float(ra.get()))
-        update_Rating_bus(mycon,float(ra.get()),bid)
-        res=get_cid(mycon,bid)
-        update_Rating_com(mycon,float(ra.get()),res[0][0])
-        mf.destroy()
-        mainui(root,uid)
+        try:
+            if ra.get().isdecimal():
+                val=float(ra.get())
+                if val>0 and val<5:
+                    insert_busrandr(mycon,bid,uid,re.get(),float(ra.get()))
+                    update_Rating_bus(mycon,float(ra.get()),bid)
+                    res=get_cid(mycon,bid)
+                    update_Rating_com(mycon,float(ra.get()),res[0][0])
+                    mf.destroy()
+                    mainui(root,uid)
+                else:
+                    messagebox.showwarning("Error","rating must be in range of 0-5")
+            else:
+                messagebox.showwarning("Error","plz enter data correct")
+        except Exception as e:
+            messagebox.showerror("Error",e)
     mf=Frame(root,padx=240,pady=150,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
     mf.grid()
     tf=Frame(mf,bd=10,width=300,height=100,relief=RIDGE,bg="dark gray")
