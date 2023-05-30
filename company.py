@@ -13,7 +13,7 @@ mycon=setup("localhost","root",pa,"bus_demo")
 def start():
     root=Tk()
     root.geometry("1000x750")
-    root.title(" "*150+"bus")
+    root.title("APPRO")
     return root
 
 def login(root):
