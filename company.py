@@ -5,7 +5,7 @@ from tkinter import ttk
 from dbms import *
 import os
 from functools import partial
-
+from PIL import ImageTk,Image
 
 pa=os.environ["dbpass"]
 mycon=setup("localhost","root",pa,"bus_demo")
@@ -17,7 +17,11 @@ def start():
     return root
 
 def login(root):
+    image=Image.open("image.jpg")
+    render = ImageTk.PhotoImage(image)
+    
     def log():
+        
         try:
             res=check_company(mycon,username.get(),passw.get())
             if res:
@@ -30,14 +34,17 @@ def login(root):
     def reg():
         mf.destroy()
         register(root)
-    mf=Frame(root,padx=240,pady=150,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
+    mf=Frame(root,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
     mf.grid()
+    img = Label(mf, image=render)
+    img.image = render
+    img.place(anchor="nw")
     tf=Frame(mf,bd=10,width=300,height=100,relief=RIDGE,bg="dark gray")
-    tf.grid(row=0,column=0)
+    tf.grid(row=0,column=0,padx=350,pady=(150,50))
     lbt=Label(tf,font=("Times",30,'bold'),text="LOGIN",bd=7)
     lbt.grid(row=0,column=0)
-    lf=Frame(mf,bd=10,width=500,height=500,relief=RIDGE,padx=43,pady=50)
-    lf.grid(row=1,column=0)
+    lf=Frame(mf,bd=10,width=500,height=500,relief=RIDGE,padx=43,pady=50,takefocus=True)
+    lf.grid(row=1,column=0,padx=240,pady=(0,100))
     l1=Label(lf,font=("Times",20,'bold'),text="User name :",bd=7,width=8,pady=15)
     l1.grid(row=0,column=0)
     username=StringVar()
@@ -61,22 +68,22 @@ def register(root):
         login(root)
     def reg():
         try:
-            if b[3].get().isdigit(): 
-                lis=[b[0].get(),b[1].get(),b[2].get(),int(b[3].get()),(b[4].get()),b[5].get(),b[6].get(),b[7].get(),tearea.get("1.0","end-1c")]
-                if (lis[0] and lis[1] and lis[2] and lis[3] and len(lis[4]==10) and lis[5] and lis[6] and lis[7] and lis[8]):
-                    insert_company(mycon,lis[0], lis[1] , lis[2] , lis[3] , len(lis[4]==10) , lis[5] , lis[6] , lis[7] , lis[8])
-                else:
-                    messagebox.showwarning("warning","plz enter the data correct")
-            else:
-                messagebox.showwarning("warning","plz enter the data correct")
+            lis=[b[0].get(),b[1].get(),b[2].get(),int(b[3].get()),(b[4].get()),b[5].get(),b[6].get(),b[7].get(),tearea.get("1.0","end-1c")]
+            insert_company(mycon,lis[0], lis[1] , lis[2] , lis[3] , lis[4] , lis[5] , lis[6] , lis[7] , lis[8])
         except Exception as e:
             messagebox.showerror("Error",e)
+
         mf.destroy()
         login(root)
-    mf=Frame(root,padx=240,pady=50,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
+    mf=Frame(root,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
     mf.grid()
+    image=Image.open("image.jpg")
+    render = ImageTk.PhotoImage(image)
+    img = Label(mf, image=render)
+    img.image = render
+    img.place(anchor="nw")
     tf=Frame(mf,bd=10,width=300,height=100,relief=RIDGE,bg="dark gray")
-    tf.grid(row=0,column=0)
+    tf.grid(row=0,column=0,padx=400,pady=(50,50))
     lbt=Label(tf,font=("Times",30,'bold'),text="Register",bd=7)
     lbt.grid(row=0,column=0)
     lf=Frame(mf,bd=10,width=500,height=500,relief=RIDGE)
@@ -205,7 +212,7 @@ def add_bus_for_company(root,cid):
     def add():
         try:
             if drop1.get().isdigit() and drop.get().isdigit() and b[6].get().isdigit() and b[0].get() and b[1].get():
-                ty=int(b[2].get())
+                ty=int(drop1.get())
                 if ty==1:
                     r1,r2=13,15
                 elif ty==2:

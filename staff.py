@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
+from PIL import ImageTk,Image
 from tkcalendar import *
 from tkinter import ttk
 from dbms import *
@@ -13,6 +14,8 @@ def start():
     root.title(" "*150+"bus")
     return root
 def login(root):
+    image=Image.open("image.jpg")
+    render = ImageTk.PhotoImage(image)
     def log():
         try:
             res=check_staff(mycon,username.get(),passw.get())
@@ -23,14 +26,17 @@ def login(root):
                 messagebox.showwarning("login","no data match")
         except Exception as e:
             messagebox.showerror("Error",e)
-    mf=Frame(root,padx=240,pady=150,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
+    mf=Frame(root,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
     mf.grid()
+    img = Label(mf, image=render)
+    img.image = render
+    img.place(anchor="nw")
     tf=Frame(mf,bd=10,width=300,height=100,relief=RIDGE,bg="dark gray")
-    tf.grid(row=0,column=0)
+    tf.grid(row=0,column=0,padx=350,pady=(150,50))
     lbt=Label(tf,font=("Times",30,'bold'),text="LOGIN",bd=7)
     lbt.grid(row=0,column=0)
-    lf=Frame(mf,bd=10,width=500,height=500,relief=RIDGE,padx=43,pady=50)
-    lf.grid(row=1,column=0,padx=15)
+    lf=Frame(mf,bd=10,width=500,height=500,relief=RIDGE,padx=43,pady=50,takefocus=True)
+    lf.grid(row=1,column=0,padx=260,pady=(0,100))
     l1=Label(lf,font=("Times",20,'bold'),text="User name :",bd=7,width=8,pady=15)
     l1.grid(row=0,column=0)
     username=StringVar()
@@ -47,6 +53,7 @@ def login(root):
 def mainui(root,bid):
     try:
         res=get_person_on_bus(mycon,bid)
+        print(res)
     except Exception as e:
         messagebox.showerror("Error",e)
     select=[]

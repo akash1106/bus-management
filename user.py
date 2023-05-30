@@ -3,6 +3,7 @@ from tkinter import messagebox
 from tkcalendar import *
 from tkinter import ttk
 from dbms import *
+from PIL import Image,ImageTk
 import time
 import os
 from functools import partial
@@ -15,8 +16,9 @@ def start():
     root.geometry("1000x750")
     root.title(" "+"bus")
     return root
-
 def login(root):
+    image=Image.open("image.jpg")
+    render = ImageTk.PhotoImage(image)
     def log():
         try:
             res=get_user(mycon,username.get(),passw.get()) 
@@ -30,14 +32,17 @@ def login(root):
     def reg():
         mf.destroy()
         register(root)
-    mf=Frame(root,padx=240,pady=150,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
+    mf=Frame(root,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
     mf.grid()
+    img = Label(mf, image=render)
+    img.image = render
+    img.place(anchor="nw")
     tf=Frame(mf,bd=10,width=300,height=100,relief=RIDGE,bg="dark gray")
-    tf.grid(row=0,column=0)
+    tf.grid(row=0,column=0,padx=350,pady=(150,50))
     lbt=Label(tf,font=("Times",30,'bold'),text="LOGIN",bd=7)
     lbt.grid(row=0,column=0)
-    lf=Frame(mf,bd=10,width=500,height=500,relief=RIDGE,padx=43,pady=50)
-    lf.grid(row=1,column=0)
+    lf=Frame(mf,bd=10,width=500,height=500,relief=RIDGE,padx=43,pady=50,takefocus=True)
+    lf.grid(row=1,column=0,padx=240,pady=(0,100))
     l1=Label(lf,font=("Times",20,'bold'),text="User name :",bd=7,width=8,pady=15)
     l1.grid(row=0,column=0)
     username=StringVar()
@@ -66,10 +71,15 @@ def register(root):
             login(root)
         except Exception as e:
             messagebox.showerror("Error",e)
-    mf=Frame(root,padx=260,pady=65,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
+    mf=Frame(root,bd=10,width=995,height=745,relief=RIDGE,bg="cadetblue")     
     mf.grid()
+    image=Image.open("image.jpg")
+    render = ImageTk.PhotoImage(image)
+    img = Label(mf, image=render)
+    img.image = render
+    img.place(anchor="nw")
     tf=Frame(mf,bd=10,width=300,height=100,relief=RIDGE,bg="dark gray")
-    tf.grid(row=0,column=0)
+    tf.grid(row=0,column=0,padx=400,pady=(50,50))
     lbt=Label(tf,font=("Times",30,'bold'),text="Register",bd=7)
     lbt.grid(row=0,column=0)
     
@@ -416,9 +426,16 @@ def mybook(root,uid):
             but=Button(fra,bd=4,width=1,height=1,bg='white',command=partial(review,res[i][9],res[i][5],uid),text="+",font=("Times",8,'bold'))
             but.grid(row=1,column=3)
 def reviewpage(root,uid,bid):
+    def isfloat(num):
+        try:
+            float(num)
+            return True
+        except ValueError:
+            return False
+
     def add():
         try:
-            if ra.get().isdecimal():
+            if isfloat(ra.get()):
                 val=float(ra.get())
                 if val>0 and val<5:
                     insert_busrandr(mycon,bid,uid,re.get(),float(ra.get()))
