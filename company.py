@@ -15,7 +15,6 @@ def start():
     root.geometry("1000x750")
     root.title("APPRO")
     return root
-
 def login(root):
     image=Image.open("image.jpg")
     render = ImageTk.PhotoImage(image)
@@ -181,10 +180,10 @@ def mainui(root,cid):
         l3.grid(row=0,column=1,padx=50)
         l4=Label(fra,font=("Times",10,'bold'),text="Departure: "+str(res[i][6]),bd=7)
         l4.grid(row=1,column=1,padx=35)
-        if res[i][4]==1:
-            typ="sleeper"
-        elif res[i][4]==2:
+        if res[i][3]==1:
             typ="seater"
+        elif res[i][3]==2:
+            typ="sleeper"
         else:
             typ="hybrid"
         l5=Label(fra,font=("Times",10,'bold'),text="type: "+typ,bd=7)
@@ -471,7 +470,6 @@ def add_staff_company(root,cid):
     mycanvas.create_window((0,0),window=myframe,anchor="nw")
     rlf.grid(row=0,column=1)
     res1=get_all_bid(mycon,cid)
-    print(res1)
     for i in range(len(a)):
         lab=Label(myframe,font=("Times",20,'bold'),text=a[i],bd=7)
         lab.grid(row=i,column=1,pady=15)

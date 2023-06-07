@@ -53,7 +53,6 @@ def login(root):
 def mainui(root,bid):
     try:
         res=get_person_on_bus(mycon,bid)
-        print(res)
     except Exception as e:
         messagebox.showerror("Error",e)
     select=[]

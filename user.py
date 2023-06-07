@@ -181,17 +181,31 @@ def mainui(root,uid):
     fro=StringVar()
     to=StringVar()
     dat=StringVar()
-
+    try:
+        r1=get_s(mycon)
+        r2=get_e(mycon)
+    except Exception as e:
+        messagebox.showerror("Error",e)
     fromlab=Label(myframe,font=("Times",20,'bold'),text="From :",bd=7)
     fromlab.grid(row=0,column=0)
-    froment=Entry(myframe,font=("Times",20,'bold'),text=fro,bd=5,width=12,bg='powder blue')
-    froment.grid(row=0,column=1)
+    drop = ttk.Combobox(
+                myframe,
+                state="readonly",
+                values=[i[0] for i in r1],
+                textvariable=fro
+            )
+    drop.grid(row=0,column=1)
 
 
     tolab=Label(myframe,font=("Times",20,'bold'),text="To:",bd=7)
     tolab.grid(row=0,column=2)
-    toent=Entry(myframe,font=("Times",20,'bold'),text=to,bd=5,width=12,bg='powder blue')
-    toent.grid(row=0,column=3)
+    drop1 = ttk.Combobox(
+                myframe,
+                state="readonly",
+                values=[i[0] for i in r2],
+                textvariable=to
+            )
+    drop1.grid(row=0,column=3)
 
     datelab=Label(myframe,font=("Times",20,'bold'),text="Date",bd=7)
     datelab.grid(row=1,column=0)
@@ -330,9 +344,9 @@ def disbus(root,res,dat,uid):
         l4=Label(fra,font=("Times",10,'bold'),text="Departure:"+str(res[i][7]),bd=7)
         l4.grid(row=1,column=1,padx=25)
         if res[i][4]==1:
-            typ="sleeper"
-        elif res[i][4]==2:
             typ="seater"
+        elif res[i][4]==2:
+            typ="sleeper"
         else:
             typ="hybrid"
         l5=Label(fra,font=("Times",10,'bold'),text="type:"+typ,bd=7)
@@ -351,10 +365,10 @@ def disbus(root,res,dat,uid):
         da1=get_seatno(mycon,res[i][0],dat)
         if not da1:
             da1.append([0])
-        l8=Label(fra,font=("Times",10,'bold'),text="seat left : "+str(res[i][9]+res[i][10]-da1[0][0]),bd=7)
+        l8=Label(fra,font=("Times",10,'bold'),text="seat left : "+str(res[i][9]+res[i][10]-int(da1[0][0])),bd=7)
         l8.grid(row=3,column=1,padx=25)
 
-        but=(Button(fra,bd=4,bg='white',command=partial(conformbook,res[i][0],dat,res[i][9]+res[i][10]-da1[0][0],da1[0][0]),text="book",font=("Times",8,'bold')))
+        but=(Button(fra,bd=4,bg='white',command=partial(conformbook,res[i][0],dat,res[i][9]+res[i][10]-int(da1[0][0]),int(da1[0][0])),text="book",font=("Times",8,'bold')))
         but.grid(row=3,column=1,columnspan=2,padx=50)
 def mybook(root,uid):
     def book():
